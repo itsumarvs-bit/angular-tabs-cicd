@@ -68,3 +68,20 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Firebase private credentials
+*service-account*.json
+firebase-adminsdk*.json
+
+# Private keys and certificates
+*.pem
+*.key
+
+# Local secrets
+secrets/
