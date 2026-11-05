@@ -1,17 +1,466 @@
-<ion-header [translucent]="true">
+<ion-header class="library-header">
   <ion-toolbar>
-    <ion-title>
-      Tab 2
-    </ion-title>
+    <div class="toolbar-content">
+      <div class="toolbar-icon">📚</div>
+      <ion-title>My Books</ion-title>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 2</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <!-- =========================
+       LOADING
+  ========================= -->
 
-  <app-explore-container name="Tab 2 page"></app-explore-container>
+  <ion-loading
+    [isOpen]="isLoading"
+    message="Loading books..."
+    spinner="crescent"
+  >
+  </ion-loading>
+
+  <!-- =========================
+       REFRESHER
+  ========================= -->
+
+  <ion-refresher slot="fixed" (ionRefresh)="refreshBooks($event)">
+    <ion-refresher-content
+      pullingText="Pull to refresh"
+      refreshingSpinner="crescent"
+      refreshingText="Refreshing library..."
+    >
+    </ion-refresher-content>
+  </ion-refresher>
+
+  <!-- =========================
+       MAIN PAGE
+  ========================= -->
+
+  <div class="library-page">
+    <!-- =========================
+         INTRO
+    ========================= -->
+
+    <section class="library-intro">
+      <div class="intro-copy">
+        <span class="section-label"> YOUR COLLECTION </span>
+
+        <h1>My Book Library</h1>
+
+        <p>
+          Keep track of what you're reading, what you want to read, and the
+          books you've already finished.
+        </p>
+      </div>
+
+      <div class="library-stat">
+        <div class="stat-number">{{ books.length }}</div>
+
+        <div class="stat-label">TOTAL BOOKS</div>
+      </div>
+    </section>
+
+    <!-- =========================
+         SEARCH
+    ========================= -->
+
+    <section class="search-section">
+      <div class="search-label">FIND A BOOK</div>
+
+      <div class="search-box">
+        <span class="search-icon"> ⌕ </span>
+
+        <input
+          type="text"
+          [(ngModel)]="searchTerm"
+          (input)="searchBooks($event)"
+          placeholder="Search by title, author, category..."
+        />
+
+        @if (searchTerm) {
+
+        <button
+          type="button"
+          class="clear-search"
+          (click)="searchTerm = ''; applyFilters()"
+        >
+          ×
+        </button>
+
+        }
+      </div>
+    </section>
+
+    <!-- =========================
+         FILTERS
+    ========================= -->
+
+    <section class="filter-section">
+      <div class="filter-title">READING STATUS</div>
+
+      <div class="filter-chips">
+        <button
+          type="button"
+          class="filter-chip"
+          [class.active]="selectedStatus === 'ALL'"
+          (click)="selectedStatus = 'ALL'; applyFilters()"
+        >
+          <span> All </span>
+
+          <small> {{ books.length }} </small>
+        </button>
+
+        <button
+          type="button"
+          class="filter-chip"
+          [class.active]="selectedStatus === 'Want to Read'"
+          (click)="selectedStatus = 'Want to Read'; applyFilters()"
+        >
+          <span> Want to Read </span>
+
+          <small>
+            {{ books.filter(b => b.status === 'Want to Read').length }}
+          </small>
+        </button>
+
+        <button
+          type="button"
+          class="filter-chip"
+          [class.active]="selectedStatus === 'Reading'"
+          (click)="selectedStatus = 'Reading'; applyFilters()"
+        >
+          <span> Reading </span>
+
+          <small>
+            {{ books.filter(b => b.status === 'Reading').length }}
+          </small>
+        </button>
+
+        <button
+          type="button"
+          class="filter-chip"
+          [class.active]="selectedStatus === 'Read'"
+          (click)="selectedStatus = 'Read'; applyFilters()"
+        >
+          <span> Read </span>
+
+          <small> {{ books.filter(b => b.status === 'Read').length }} </small>
+        </button>
+      </div>
+    </section>
+
+    <!-- =========================
+         RESULTS
+    ========================= -->
+
+    <div class="results-header">
+      <div>
+        <span class="results-count"> {{ filteredBooks.length }} </span>
+
+        <span class="results-text"> books found </span>
+      </div>
+
+      <div class="results-line"></div>
+    </div>
+
+    <!-- =========================
+         BOOK LIST
+    ========================= -->
+
+    @if (filteredBooks.length > 0) {
+
+    <div class="book-list">
+      @for (book of filteredBooks; track book.id) {
+
+      <article
+        class="book-entry"
+        [class.swiped]="swipedBookId === book.id"
+        (pointerdown)="startSwipe($event, book)"
+        (pointermove)="moveSwipe($event, book)"
+        (pointerup)="endSwipe($event, book)"
+        (pointercancel)="closeSwipe()"
+      >
+        <!-- =========================
+                 SWIPE ACTIONS
+            ========================= -->
+
+        <div class="swipe-actions">
+          <button
+            type="button"
+            class="swipe-edit"
+            (pointerdown)="$event.stopPropagation()"
+            (click)="openEditModal(book); $event.stopPropagation()"
+          >
+            <span> ✎ </span>
+
+            <strong> EDIT </strong>
+          </button>
+
+          <button
+            type="button"
+            class="swipe-delete"
+            (pointerdown)="$event.stopPropagation()"
+            (click)="deleteBook(book); $event.stopPropagation()"
+          >
+            <span> × </span>
+
+            <strong> DELETE </strong>
+          </button>
+        </div>
+
+        <!-- =========================
+                 BOOK CONTENT
+            ========================= -->
+
+        <div class="book-content">
+          <div class="book-number">
+            {{ ($index + 1).toString().padStart(2, '0') }}
+          </div>
+
+          <div class="book-details">
+            <div class="title-row">
+              <div class="title-area">
+                <h2>{{ book.title }}</h2>
+
+                <p class="author">by {{ book.author }}</p>
+              </div>
+
+              <span
+                class="book-status"
+                [class.status-want]="book.status === 'Want to Read'"
+                [class.status-reading]="book.status === 'Reading'"
+                [class.status-read]="book.status === 'Read'"
+              >
+                {{ book.status }}
+              </span>
+            </div>
+
+            <!-- INFORMATION -->
+
+            <div class="book-information">
+              <span class="category"> {{ book.category }} </span>
+
+              <span class="separator"> / </span>
+
+              <span> {{ book.year }} </span>
+            </div>
+
+            <!-- RATING -->
+
+            <div class="book-rating">
+              <div class="stars-display">
+                @for ( star of [1,2,3,4,5,6,7,8,9,10]; track star ) {
+
+                <span [class.filled]="star <= book.rating"> ★ </span>
+
+                }
+              </div>
+
+              <strong> {{ book.rating }}/10 </strong>
+            </div>
+
+            <!-- NOTES -->
+
+            @if (book.notes) {
+
+            <div class="book-notes">
+              <span class="notes-mark"> “ </span>
+
+              <p>{{ book.notes }}</p>
+            </div>
+
+            }
+          </div>
+        </div>
+      </article>
+
+      }
+    </div>
+
+    }
+
+    <!-- =========================
+         EMPTY STATE
+    ========================= -->
+
+    @if (filteredBooks.length === 0) {
+
+    <section class="empty-state">
+      <div class="empty-circle">📚</div>
+
+      <span class="empty-label"> NOTHING HERE YET </span>
+
+      <h2>No Books Found</h2>
+
+      <p>Try a different search term or select another reading status.</p>
+    </section>
+
+    }
+  </div>
+
+  <!-- ==================================================
+       UPDATE BOOK MODAL
+  ================================================== -->
+
+  <ion-modal [isOpen]="isEditModalOpen" (didDismiss)="closeEditModal()">
+    <ng-template>
+      <ion-header class="modal-header">
+        <ion-toolbar>
+          <ion-title> Update Book </ion-title>
+
+          <ion-buttons slot="end">
+            <ion-button (click)="closeEditModal()"> Close </ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="modal-content">
+        <div class="edit-page">
+          <!-- INTRO -->
+
+          <div class="edit-intro">
+            <span class="edit-label"> EDIT ENTRY </span>
+
+            <h1>Book Details</h1>
+
+            <p>Update the information for this book.</p>
+          </div>
+
+          <!-- TITLE -->
+
+          <div class="edit-group">
+            <label> Book Title </label>
+
+            <input
+              type="text"
+              [(ngModel)]="editingBook.title"
+              placeholder="Enter book title"
+            />
+          </div>
+
+          <!-- AUTHOR -->
+
+          <div class="edit-group">
+            <label> Author </label>
+
+            <input
+              type="text"
+              [(ngModel)]="editingBook.author"
+              placeholder="Enter author name"
+            />
+          </div>
+
+          <!-- CATEGORY -->
+
+          <div class="edit-group">
+            <label> Category </label>
+
+            <input
+              type="text"
+              [(ngModel)]="editingBook.category"
+              placeholder="Enter category"
+            />
+          </div>
+
+          <!-- YEAR -->
+
+          <div class="edit-group">
+            <label> Publication Year </label>
+
+            <input
+              type="number"
+              [(ngModel)]="editingBook.year"
+              placeholder="Enter publication year"
+            />
+          </div>
+
+          <!-- RATING -->
+
+          <div class="edit-group">
+            <div class="edit-label-row">
+              <label> Rating </label>
+
+              <span> {{ editingBook.rating }}/10 </span>
+            </div>
+
+            <div class="edit-rating">
+              @for ( star of [1,2,3,4,5,6,7,8,9,10]; track star ) {
+
+              <button
+                type="button"
+                class="edit-star"
+                [class.active]="star <= editingBook.rating"
+                (click)="editingBook.rating = star"
+              >
+                ★
+              </button>
+
+              }
+            </div>
+          </div>
+
+          <!-- STATUS -->
+
+          <div class="edit-group">
+            <label> Reading Status </label>
+
+            <div class="edit-status-options">
+              <button
+                type="button"
+                [class.active]="editingBook.status === 'Want to Read'"
+                (click)="editingBook.status = 'Want to Read'"
+              >
+                Want to Read
+              </button>
+
+              <button
+                type="button"
+                [class.active]="editingBook.status === 'Reading'"
+                (click)="editingBook.status = 'Reading'"
+              >
+                Reading
+              </button>
+
+              <button
+                type="button"
+                [class.active]="editingBook.status === 'Read'"
+                (click)="editingBook.status = 'Read'"
+              >
+                Read
+              </button>
+            </div>
+          </div>
+
+          <!-- NOTES -->
+
+          <div class="edit-group">
+            <label> Notes </label>
+
+            <textarea
+              [(ngModel)]="editingBook.notes"
+              placeholder="Add notes about this book..."
+              rows="5"
+            >
+            </textarea>
+          </div>
+
+          <!-- MODAL ACTIONS -->
+
+          <div class="edit-actions">
+            <button
+              type="button"
+              class="cancel-edit"
+              (click)="closeEditModal()"
+            >
+              Cancel
+            </button>
+
+            <button type="button" class="save-edit" (click)="saveBook()">
+              Save Changes
+            </button>
+          </div>
+        </div>
+      </ion-content>
+    </ng-template>
+  </ion-modal>
 </ion-content>

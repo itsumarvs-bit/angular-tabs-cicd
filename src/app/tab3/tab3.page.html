@@ -1,17 +1,272 @@
-<ion-header [translucent]="true">
+<ion-header class="about-header">
   <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
+    <div class="toolbar-content">
+      <div class="toolbar-mark">B</div>
+      <ion-title>About</ion-title>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <main class="about-page">
+    <!-- HERO -->
+    <section class="hero-section">
+      <div class="hero-top">
+        <span class="hero-label">ABOUT THE APPLICATION</span>
+        <div class="hero-badge">BOOK LIBRARY</div>
+      </div>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+      <div class="hero-main">
+        <div class="hero-text">
+          <h1>
+            A simpler way<br />
+            to manage your<br />
+            <span>reading life.</span>
+          </h1>
+
+          <p>
+            Book Library gives you a simple place to organize, track, and manage
+            the books in your personal collection.
+          </p>
+        </div>
+
+        <div class="hero-symbol">
+          <div class="symbol-letter">B</div>
+
+          <div class="symbol-lines">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-bottom">
+        <div>
+          <strong>CRUD</strong>
+          <span>APPLICATION</span>
+        </div>
+
+        <div>
+          <strong>FIREBASE</strong>
+          <span>CLOUD DATABASE</span>
+        </div>
+
+        <div>
+          <strong>IONIC</strong>
+          <span>MOBILE UI</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="content-section">
+      <div class="section-heading">
+        <span class="heading-number">01</span>
+
+        <div>
+          <span class="heading-label">OVERVIEW</span>
+          <h2>About the App</h2>
+        </div>
+      </div>
+
+      <div class="about-text">
+        <p>
+          Book Library is a simple book management application designed to help
+          users maintain their personal reading collection.
+        </p>
+
+        <p>
+          Users can add books, search their collection, organize books according
+          to reading status, update information, and remove books when they are
+          no longer needed.
+        </p>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="content-section">
+      <div class="section-heading">
+        <span class="heading-number">02</span>
+
+        <div>
+          <span class="heading-label">WHAT YOU CAN DO</span>
+          <h2>Features</h2>
+        </div>
+      </div>
+
+      <div class="feature-list">
+        <div class="feature-row">
+          <div class="feature-number">01</div>
+
+          <div class="feature-content">
+            <h3>Add Books</h3>
+            <p>
+              Add book titles, authors, categories, publication years, ratings,
+              and notes.
+            </p>
+          </div>
+
+          <div class="feature-arrow">→</div>
+        </div>
+
+        <div class="feature-row">
+          <div class="feature-number">02</div>
+
+          <div class="feature-content">
+            <h3>Search Books</h3>
+            <p>Quickly find books using their title, author, or category.</p>
+          </div>
+
+          <div class="feature-arrow">→</div>
+        </div>
+
+        <div class="feature-row">
+          <div class="feature-number">03</div>
+
+          <div class="feature-content">
+            <h3>Filter Reading Status</h3>
+            <p>Separate books into Want to Read, Reading, and Read.</p>
+          </div>
+
+          <div class="feature-arrow">→</div>
+        </div>
+
+        <div class="feature-row">
+          <div class="feature-number">04</div>
+
+          <div class="feature-content">
+            <h3>Update Books</h3>
+            <p>
+              Modify existing book information whenever details need to be
+              changed.
+            </p>
+          </div>
+
+          <div class="feature-arrow">→</div>
+        </div>
+
+        <div class="feature-row">
+          <div class="feature-number">05</div>
+
+          <div class="feature-content">
+            <h3>Delete Books</h3>
+            <p>
+              Remove books from your personal library whenever they are no
+              longer needed.
+            </p>
+          </div>
+
+          <div class="feature-arrow">→</div>
+        </div>
+
+        <div class="feature-row">
+          <div class="feature-number">06</div>
+
+          <div class="feature-content">
+            <h3>Cloud Storage</h3>
+            <p>Book records are stored using Firebase Firestore.</p>
+          </div>
+
+          <div class="feature-arrow">→</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BOOK INFORMATION -->
+    <section class="content-section">
+      <div class="section-heading">
+        <span class="heading-number">03</span>
+
+        <div>
+          <span class="heading-label">DATA STRUCTURE</span>
+          <h2>Book Information</h2>
+        </div>
+      </div>
+
+      <div class="data-list">
+        <div class="data-row">
+          <div class="data-key">TITLE</div>
+          <div class="data-description">Name of the book</div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-key">AUTHOR</div>
+          <div class="data-description">Author of the book</div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-key">CATEGORY</div>
+          <div class="data-description">Classification of the book</div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-key">YEAR</div>
+          <div class="data-description">Publication year</div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-key">RATING</div>
+          <div class="data-description">Personal rating from 1 to 10</div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-key">STATUS</div>
+          <div class="data-description">Current reading progress</div>
+        </div>
+
+        <div class="data-row">
+          <div class="data-key">NOTES</div>
+          <div class="data-description">Additional personal notes</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TECHNOLOGY -->
+    <section class="technology-section">
+      <div class="tech-heading">
+        <span class="heading-number">04</span>
+
+        <div>
+          <span class="heading-label">DEVELOPMENT</span>
+          <h2>Built With</h2>
+        </div>
+      </div>
+
+      <div class="technology-list">
+        <span>IONIC</span>
+        <span>ANGULAR</span>
+        <span>TYPESCRIPT</span>
+        <span>FIREBASE</span>
+        <span>FIRESTORE</span>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="about-footer">
+      <div class="footer-line"></div>
+
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="footer-mark">B</div>
+
+          <div>
+            <h3>Book Library</h3>
+            <p>Ionic • Angular • Firebase Firestore</p>
+          </div>
+        </div>
+
+        <div class="student-info">
+          <span>ACTIVITY BY</span>
+          <strong>Marvin E. Maramot</strong>
+          <small>BSIT IV-F2</small>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>CRUD ACTIVITY</span>
+        <span>© BOOK LIBRARY</span>
+      </div>
+    </footer>
+  </main>
 </ion-content>

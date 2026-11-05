@@ -1,17 +1,293 @@
-<ion-header [translucent]="true">
+<ion-header class="app-header">
   <ion-toolbar>
-    <ion-title>
-      Tab 1
-    </ion-title>
+    <div class="toolbar-content">
+      <div class="toolbar-mark">📖</div>
+
+      <ion-title> Add Book </ion-title>
+    </div>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 1</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <div class="page-wrapper">
+    <!-- ==================================================
+         INTRO
+    ================================================== -->
 
-  <app-explore-container name="Tab 1 page"></app-explore-container>
+    <section class="intro-section">
+      <div class="intro-badge">YOUR LIBRARY</div>
+
+      <h1>Add a New Book</h1>
+
+      <p>Build your personal collection one book at a time.</p>
+
+      <div class="intro-line"></div>
+    </section>
+
+    <!-- ==================================================
+         FORM CARD
+    ================================================== -->
+
+    <section class="form-card">
+      <!-- FORM HEADER -->
+
+      <div class="form-heading">
+        <div class="heading-number">01</div>
+
+        <div>
+          <h2>Book Details</h2>
+
+          <p>Tell us about the book you want to add.</p>
+        </div>
+      </div>
+
+      <!-- ==================================================
+           BOOK TITLE
+      ================================================== -->
+
+      <div class="form-group">
+        <label>
+          Book Title
+          <span>*</span>
+        </label>
+
+        <div class="input-wrapper">
+          <div class="field-icon">📖</div>
+
+          <input
+            type="text"
+            [(ngModel)]="newBook.title"
+            placeholder="Enter book title"
+          />
+        </div>
+      </div>
+
+      <!-- ==================================================
+           AUTHOR
+      ================================================== -->
+
+      <div class="form-group">
+        <label>
+          Author
+          <span>*</span>
+        </label>
+
+        <div class="input-wrapper">
+          <div class="field-icon">✍</div>
+
+          <input
+            type="text"
+            [(ngModel)]="newBook.author"
+            placeholder="Enter author name"
+          />
+        </div>
+      </div>
+
+      <!-- ==================================================
+           CATEGORY
+      ================================================== -->
+
+      <div class="form-group">
+        <label>
+          Category
+          <span>*</span>
+        </label>
+
+        <div class="input-wrapper">
+          <div class="field-icon">#</div>
+
+          <select [(ngModel)]="newBook.category">
+            <option value="" disabled>Select a category</option>
+
+            <option value="Fiction">Fiction</option>
+
+            <option value="Non-Fiction">Non-Fiction</option>
+
+            <option value="Science">Science</option>
+
+            <option value="Technology">Technology</option>
+
+            <option value="Romance">Romance</option>
+
+            <option value="Fantasy">Fantasy</option>
+
+            <option value="History">History</option>
+
+            <option value="Biography">Biography</option>
+
+            <option value="Self-Help">Self-Help</option>
+
+            <option value="Education">Education</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- ==================================================
+           PUBLICATION YEAR
+      ================================================== -->
+
+      <div class="form-group">
+        <label>
+          Publication Year
+          <span>*</span>
+        </label>
+
+        <div class="input-wrapper">
+          <div class="field-icon">#</div>
+
+          <input
+            type="number"
+            [(ngModel)]="newBook.year"
+            placeholder="e.g. 2024"
+            min="1000"
+            max="2100"
+          />
+        </div>
+      </div>
+
+      <!-- ==================================================
+           RATING
+      ================================================== -->
+
+      <div class="form-group rating-group">
+        <div class="label-row">
+          <label> Rating </label>
+
+          <div class="rating-value">{{ newBook.rating }}/10</div>
+        </div>
+
+        <div class="rating-box">
+          <div class="stars">
+            @for ( star of [1,2,3,4,5,6,7,8,9,10]; track star ) {
+
+            <button
+              type="button"
+              class="star-button"
+              [class.active]="star <= newBook.rating"
+              (click)="newBook.rating = star"
+            >
+              ★
+            </button>
+
+            }
+          </div>
+
+          <p>Click a star to rate this book</p>
+        </div>
+      </div>
+
+      <!-- ==================================================
+           READING STATUS
+      ================================================== -->
+
+      <div class="form-group">
+        <label> Reading Status </label>
+
+        <div class="status-options">
+          <button
+            type="button"
+            class="status-option"
+            [class.selected]="newBook.status === 'Want to Read'"
+            (click)="newBook.status = 'Want to Read'"
+          >
+            <span class="status-dot"></span>
+
+            Want to Read
+          </button>
+
+          <button
+            type="button"
+            class="status-option"
+            [class.selected]="newBook.status === 'Reading'"
+            (click)="newBook.status = 'Reading'"
+          >
+            <span class="status-dot"></span>
+
+            Reading
+          </button>
+
+          <button
+            type="button"
+            class="status-option"
+            [class.selected]="newBook.status === 'Read'"
+            (click)="newBook.status = 'Read'"
+          >
+            <span class="status-dot"></span>
+
+            Read
+          </button>
+        </div>
+      </div>
+
+      <!-- ==================================================
+           NOTES
+      ================================================== -->
+
+      <div class="form-group">
+        <label> Notes </label>
+
+        <textarea
+          [(ngModel)]="newBook.notes"
+          placeholder="Write something about this book..."
+          rows="5"
+        ></textarea>
+      </div>
+
+      <!-- ==================================================
+           DIVIDER
+      ================================================== -->
+
+      <div class="form-divider"></div>
+
+      <!-- ==================================================
+           ACTIONS
+      ================================================== -->
+
+      <div class="form-actions">
+        <button
+          type="button"
+          class="clear-button"
+          [disabled]="isLoading"
+          (click)="resetForm()"
+        >
+          <span> ↻ </span>
+
+          Clear Form
+        </button>
+
+        <button
+          type="button"
+          class="submit-button"
+          [disabled]="isLoading"
+          (click)="addBook()"
+        >
+          <span> + </span>
+
+          Add Book
+        </button>
+      </div>
+
+      <!-- ==================================================
+           REQUIRED
+      ================================================== -->
+
+      <p class="required-note">
+        <span> * </span>
+
+        Required fields
+      </p>
+    </section>
+
+    <!-- ==================================================
+         BOTTOM MESSAGE
+    ================================================== -->
+
+    <div class="bottom-message">
+      <span class="bottom-line"></span>
+
+      <span> READ • LEARN • GROW </span>
+
+      <span class="bottom-line"></span>
+    </div>
+  </div>
 </ion-content>
