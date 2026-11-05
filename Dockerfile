@@ -1,21 +1,15 @@
-
-# Use Node.js 22 Alpine
 FROM node:22-alpine
 
-# Set the working directory
 WORKDIR /app
 
-# Copy dependency manifests
-COPY package.json package-lock.json ./
+RUN npm install -g @ionic/cli
 
-# Install dependencies
-RUN npm ci
+COPY package*.json ./
 
-# Copy the application source
+RUN npm install
+
 COPY . .
 
-# Expose the application port
 EXPOSE 8100
 
-# Start Angular development server
-CMD ["npm", "start", "--", "--host", "0.0.0.0", "--port", "8100"]
+CMD ["ionic","serve","--host=0.0.0.0","--port=8100","--no-open"]
